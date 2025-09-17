@@ -1,0 +1,42 @@
+# Ports se definen en override
+services:
+  visit-route:
+    container_name: visit-route
+    build:
+      context: ../../../
+      dockerfile: ./.devops/docker/develop/Dockerfile
+    volumes:
+      - ../../../:/var/www/app
+      - ~/storage_block/visit-route/volumen_files:/var/www/volumen_files
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+# Nginx Service
+  visit-route-nginx:
+    image: nginx:alpine
+    container_name: visit-route-nginx
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - ../../../:/var/www/app
+      - ./nginx/conf.d/:/etc/nginx/templates
+    environment:
+      NGINX_FASTCGI_PASS: "visit-route:9000"
+
+# Servicio de Base de Datos PostgreSQL
+  db-postgres-visit-route:
+    image: postgres:14
+    container_name: db-postgres-visit-route
+    environment:
+      POSTGRES_PASSWORD: "shtwkj211283sss"
+      POSTGRES_USER: "routes_api"
+      POSTGRES_DB: "routes-api"
+    volumes:
+      - ~/storage_block/routes/postgres/data:/var/lib/postgresql/data
+    ports:
+      - 5437:5432
+
+#docker network create visit-route-network
+networks:
+  default:
+    name: visit-route-network
+    external: true

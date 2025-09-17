@@ -1,0 +1,7 @@
+#Puerto_maquina:puerto_contenedor
+services:
+  visit-route-nginx:
+    ports:
+      - "8083:80"
+
+
