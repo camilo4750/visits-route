@@ -60,4 +60,31 @@ class VisitTest extends BaseTest
         ]);
     }
 
+    #[Test]
+    public function is_update_working(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $updateData = [
+            'name' => 'Nuevo Nombre',
+            'email' => 'nuevo.email@example.com',
+            'latitude' => 20.123456,
+            'longitude' => -70.654321,
+        ];
+
+        $response = $this->putJson(route('visits.update', ['id' => $visit->id]), $updateData);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'message' => 'Tu visita ha sido actualizada con éxito',
+        ]);
+
+        $this->assertDatabaseHas('visits', [
+            'id' => $visit->id,
+            'name' => $updateData['name'],
+            'email' => $updateData['email'],
+            'latitude' => $updateData['latitude'],
+            'longitude' => $updateData['longitude'],
+        ]);
+    }
 }

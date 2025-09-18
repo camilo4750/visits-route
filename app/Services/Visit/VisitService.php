@@ -2,9 +2,11 @@
 namespace App\Services\Visit;
 
 use App\Dto\Visit\VisitShowDto;
+use App\Exceptions\Visit\VisitNotFoundException;
 use App\Interfaces\Repositories\Visit\VisitRepositoryInterface;
 use App\Interfaces\Services\Visit\VisitServiceInterface;
 use App\Mappers\Visit\VisitNewDtoMapper;
+use App\Mappers\Visit\VisitUpdateDtoMapper;
 use Illuminate\Http\Request;
 
 class VisitService implements VisitServiceInterface
@@ -26,5 +28,18 @@ class VisitService implements VisitServiceInterface
     public function getById(int $id): VisitShowDto|null
     {
         return $this->visitRepo->getById($id);
+    }
+
+    public function update(Request $request, int $id): void
+    {
+        $visit = $this->visitRepo->getById($id);
+
+        throw_if(
+            empty($visit),
+            new VisitNotFoundException(),
+        );
+
+        $dto = (new VisitUpdateDtoMapper())->createFromRequest($request);
+        $this->visitRepo->update($dto, $id);
     }
 }

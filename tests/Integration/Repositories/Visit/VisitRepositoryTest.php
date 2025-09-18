@@ -37,21 +37,40 @@ class VisitRepositoryTest extends TestCase
     #[Test]
     public function is_show_repository(): void
     {
-        // Creamos una visita en la base de datos
         $visit = \App\Entities\Visit\VisitEntity::factory()->create();
 
-        // Instanciamos el repositorio
         $repo = new \App\Repositories\Visit\VisitRepository();
 
-        // Ejecutamos el método getById
         $dto = $repo->getById($visit->id);
 
-        // Verificamos que el DTO no sea null y tenga los datos correctos
         $this->assertNotNull($dto);
         $this->assertEquals($visit->name, $dto->name);
         $this->assertEquals($visit->email, $dto->email);
         $this->assertEquals($visit->latitude, $dto->latitude);
         $this->assertEquals($visit->longitude, $dto->longitude);
         $this->assertEquals($visit->created_at, $dto->createdAt);
+    }
+
+    #[Test]
+    public function is_update_repository(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $dto = new \App\Dto\Visit\VisitUpdateDto();
+        $dto->name = 'Nombre Actualizado';
+        $dto->email = 'actualizado@example.com';
+        $dto->latitude = 33.333333;
+        $dto->longitude = -66.666666;
+
+        $repo = new \App\Repositories\Visit\VisitRepository();
+        $repo->update($dto, $visit->id);
+
+        $this->assertDatabaseHas('visits', [
+            'id' => $visit->id,
+            'name' => $dto->name,
+            'email' => $dto->email,
+            'latitude' => $dto->latitude,
+            'longitude' => $dto->longitude,
+        ]);
     }
 }

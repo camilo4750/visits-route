@@ -8,5 +8,8 @@ use Illuminate\Http\Request;
 interface VisitServiceInterface
 {
     public function store(Request $request): void;
+
     public function getById(int $id): VisitShowDto|null;
+
+    public function update(Request $request, int $id): void;
 }

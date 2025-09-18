@@ -49,4 +49,29 @@ class VisitServiceTest extends BaseTest
         $this->assertEquals($visit->longitude, $dto->longitude);
         $this->assertEquals($visit->created_at, $dto->createdAt);
     }
+
+    #[Test]
+    public function is_update_service(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $updateData = [
+            'name' => 'Nombre Actualizado',
+            'email' => 'actualizado@example.com',
+            'latitude' => 22.222222,
+            'longitude' => -55.555555,
+        ];
+
+        $request = new \Illuminate\Http\Request($updateData);
+        $service = app(\App\Services\Visit\VisitService::class);
+        $service->update($request, $visit->id);
+
+        $this->assertDatabaseHas('visits', [
+            'id' => $visit->id,
+            'name' => $updateData['name'],
+            'email' => $updateData['email'],
+            'latitude' => $updateData['latitude'],
+            'longitude' => $updateData['longitude'],
+        ]);
+    }
 }

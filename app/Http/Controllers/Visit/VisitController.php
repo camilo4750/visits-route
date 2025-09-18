@@ -44,4 +44,18 @@ class VisitController extends Controller
         });
     }
 
+    public function update(Request $request, int $id): array|JsonResponse
+    {
+        return ControllerWrapper::execWithJsonSuccessResponse(function () use ($request, $id) {
+            (new VisitControllerValidate())
+                ->validateUpdateRequest($request);
+
+            $this->visitService->update($request, $id);
+
+            return [
+                "message" => "Tu visita ha sido actualizada con éxito",
+            ];
+        });
+    }
+
 }
