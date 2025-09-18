@@ -3,9 +3,10 @@
 namespace App\Repositories\Visit;
 
 use App\Dto\Visit\VisitNewDto;
+use App\Dto\Visit\VisitShowDto;
 use App\Entities\Visit\VisitEntity;
 use App\Interfaces\Repositories\Visit\VisitRepositoryInterface;
-use Illuminate\Support\Collection;
+use App\Mappers\Visit\VisitShowDtoMapper;
 
 class VisitRepository implements VisitRepositoryInterface
 {
@@ -20,5 +21,14 @@ class VisitRepository implements VisitRepositoryInterface
         ]);
 
         return $this;
+    }
+
+    public function getById(int $id): VisitShowDto|null
+    {
+        $visit = VisitEntity::query()->find($id);
+        if (!$visit) {
+            return null;
+        }
+        return (new VisitShowDtoMapper())->createFromDbRecord($visit);
     }
 }

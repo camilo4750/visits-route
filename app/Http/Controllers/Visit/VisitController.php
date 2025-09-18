@@ -32,4 +32,16 @@ class VisitController extends Controller
         });
     }
 
+    public function show(int $id): array|JsonResponse
+    {
+        return ControllerWrapper::execWithJsonSuccessResponse(function () use ($id) {
+            $visit = $this->visitService->getById($id);
+
+            return [
+                "message" => "Informacion de la visita",
+                "data" => $visit,
+            ];
+        });
+    }
+
 }
