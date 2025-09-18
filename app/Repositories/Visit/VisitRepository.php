@@ -11,6 +11,14 @@ use App\Mappers\Visit\VisitShowDtoMapper;
 
 class VisitRepository implements VisitRepositoryInterface
 {
+    public function getAll(): array
+    {
+        $visits = VisitEntity::all();
+        return $visits->map(function ($visit) {
+            return (new VisitShowDtoMapper())->createFromDbRecord($visit);
+        })->toArray();
+    }
+
     public function store(VisitNewDto $dto): static
     {
         VisitEntity::query()->insert([

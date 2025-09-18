@@ -13,6 +13,36 @@ class VisitTest extends BaseTest
     use RefreshDatabase;
 
     #[Test]
+    public function is_index_working(): void
+    {
+        $visits = \App\Entities\Visit\VisitEntity::factory()->count(3)->create();
+
+        $response = $this->getJson(route('visits.index'));
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'message',
+            'data' => [
+                '*' => [
+                    'name',
+                    'email',
+                    'latitude',
+                    'longitude',
+                    'createdAt',
+                ],
+            ],
+        ]);
+
+        foreach ($visits as $visit) {
+            $response->assertJsonFragment([
+                'name' => $visit->name,
+                'email' => $visit->email,
+                'latitude' => $visit->latitude,
+                'longitude' => $visit->longitude,
+            ]);
+        }
+    }
+
+    #[Test]
     public function is_store_working(): void
     {
         $request = VisitEntity::factory()->make()->toArray();

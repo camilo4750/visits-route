@@ -8,6 +8,8 @@ use App\Dto\Visit\VisitUpdateDto;
 
 interface VisitRepositoryInterface
 {
+    public function getAll(): array;
+
     public function store(VisitNewDto $dto): static;
 
     public function getById(int $id): VisitShowDto|null;

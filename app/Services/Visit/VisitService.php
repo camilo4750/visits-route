@@ -18,6 +18,12 @@ class VisitService implements VisitServiceInterface
     {
         $this->visitRepo = $visitRepo;
     }
+
+    public function getAll(): array
+    {
+        return $this->visitRepo->getAll();
+    }
+
     public function store(Request $request): void
     {
         $dto = (new VisitNewDtoMapper())->createFromRequest($request);

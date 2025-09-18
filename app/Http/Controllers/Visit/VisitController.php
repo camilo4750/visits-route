@@ -18,6 +18,18 @@ class VisitController extends Controller
         $this->visitService = $visitService;
     }
 
+    public function index(): array|JsonResponse
+    {
+        return ControllerWrapper::execWithJsonSuccessResponse(function () {
+            $visits = $this->visitService->getAll();
+
+            return [
+                "message" => "Listado de visitas",
+                "data" => $visits,
+            ];
+        });
+    }
+
     public function store(Request $request): array|JsonResponse
     {
         return ControllerWrapper::execWithJsonSuccessResponse(function () use ($request) {

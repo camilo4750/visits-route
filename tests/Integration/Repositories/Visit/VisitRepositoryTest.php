@@ -15,6 +15,27 @@ class VisitRepositoryTest extends TestCase
     use RefreshDatabase;
 
     #[Test]
+    public function is_index_repository(): void
+    {
+        $visits = \App\Entities\Visit\VisitEntity::factory()->count(3)->create();
+
+        $repo = new \App\Repositories\Visit\VisitRepository();
+        $result = $repo->getAll();
+        $this->assertCount(3, $result);
+
+        foreach ($visits as $visit) {
+            $this->assertTrue(
+                collect($result)->contains(function ($dto) use ($visit) {
+                    return $dto->name === $visit->name &&
+                        $dto->email === $visit->email &&
+                        $dto->latitude == $visit->latitude &&
+                        $dto->longitude == $visit->longitude;
+                })
+            );
+        }
+    }
+
+    #[Test]
     public function is_store_repository(): void
     {
         $dto = new \App\Dto\Visit\VisitNewDto();
