@@ -88,22 +88,37 @@
                             body: JSON.stringify(visit.value)
                         });
 
-                        if (!response.ok) {
-                            throw new Error('Fallo en la petición')
-                        }
-
                         const data = await response.json()
+
+                         if (!response.ok) {
+                            if (data.errors) {
+                                Object.values(data.errors).forEach(errorMsg => {
+                                    Toastify({
+                                        text: errorMsg,
+                                        duration: 2000,
+                                        gravity: "right",
+                                        position: "right",
+                                        style: {
+                                            background: "#ef4444",
+                                        },
+                                        stopOnFocus: true,
+                                    }).showToast();
+                                });   
+                            }
+                            return;
+                        }
 
                         Toastify({
                             text: data.message,
                             duration: 4000,
                             gravity: "top",
                             position: "right",
-                            backgroundColor: "#10b981",
+                            style: {
+                                background: "#10b981",
+                            },
                             stopOnFocus: true,
                         }).showToast()
                         $('#offcanvasCreateVisit').offcanvas('hide');
-                        
                     } catch (err) {
                        console.error('Error al guardar visita: ', err)
                     } finally {
