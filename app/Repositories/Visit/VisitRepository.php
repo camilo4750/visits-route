@@ -47,4 +47,13 @@ class VisitRepository implements VisitRepositoryInterface
 
         return $this;
     }
+
+    public function destroy(int $id): static
+    {
+        VisitEntity::query()
+            ->where('id', $id)
+            ->delete();
+
+        return $this;
+    }
 }

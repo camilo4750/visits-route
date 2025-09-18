@@ -73,4 +73,17 @@ class VisitRepositoryTest extends TestCase
             'longitude' => $dto->longitude,
         ]);
     }
+
+    #[Test]
+    public function is_destroy_repository(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $repo = new \App\Repositories\Visit\VisitRepository();
+        $repo->destroy($visit->id);
+
+        $this->assertDatabaseMissing('visits', [
+            'id' => $visit->id,
+        ]);
+    }
 }

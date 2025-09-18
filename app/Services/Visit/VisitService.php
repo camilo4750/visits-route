@@ -42,4 +42,16 @@ class VisitService implements VisitServiceInterface
         $dto = (new VisitUpdateDtoMapper())->createFromRequest($request);
         $this->visitRepo->update($dto, $id);
     }
+
+    public function destroy(int $id): void
+    {
+        $visit = $this->visitRepo->getById($id);
+
+        throw_if(
+            empty($visit),
+            new VisitNotFoundException(),
+        );
+
+        $this->visitRepo->destroy($id);
+    }
 }

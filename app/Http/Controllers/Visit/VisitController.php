@@ -58,4 +58,15 @@ class VisitController extends Controller
         });
     }
 
+    public function destroy(int $id): array|JsonResponse
+    {
+        return ControllerWrapper::execWithJsonSuccessResponse(function () use ($id) {
+            $this->visitService->destroy($id);
+
+            return [
+                "message" => "Tu visita ha sido eliminada con éxito",
+            ];
+        });
+    }
+
 }

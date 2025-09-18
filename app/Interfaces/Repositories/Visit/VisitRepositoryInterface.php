@@ -13,4 +13,6 @@ interface VisitRepositoryInterface
     public function getById(int $id): VisitShowDto|null;
 
     public function update(VisitUpdateDto $dto, int $id): static;
+
+    public function destroy(int $id): static;
 }

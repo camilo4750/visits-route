@@ -74,4 +74,17 @@ class VisitServiceTest extends BaseTest
             'longitude' => $updateData['longitude'],
         ]);
     }
+
+    #[Test]
+    public function is_destroy_service(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $service = app(\App\Services\Visit\VisitService::class);
+        $service->destroy($visit->id);
+
+        $this->assertDatabaseMissing('visits', [
+            'id' => $visit->id,
+        ]);
+    }
 }

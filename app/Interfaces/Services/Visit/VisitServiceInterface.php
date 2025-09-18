@@ -12,4 +12,6 @@ interface VisitServiceInterface
     public function getById(int $id): VisitShowDto|null;
 
     public function update(Request $request, int $id): void;
+
+    public function destroy(int $id): void;
 }

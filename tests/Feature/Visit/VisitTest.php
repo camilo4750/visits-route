@@ -87,4 +87,18 @@ class VisitTest extends BaseTest
             'longitude' => $updateData['longitude'],
         ]);
     }
+
+    #[Test]
+    public function is_destroy_working(): void
+    {
+        $visit = \App\Entities\Visit\VisitEntity::factory()->create();
+
+        $response = $this->deleteJson(route('visits.destroy', ['id' => $visit->id]));
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('visits', [
+            'id' => $visit->id,
+        ]);
+    }
 }
