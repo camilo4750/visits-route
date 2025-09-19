@@ -130,6 +130,7 @@
                 const map = ref(null);
                 const visits = ref([]);
                 const visit = ref({
+                    id: null,
                     name: '',
                     email: '',
                     latitude: null,
@@ -146,7 +147,7 @@
                         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                     }).addTo(map.value);
 
-                    getAllVisits();
+                    getVisitsMap();
                 });
 
                 async function saveVisit() {
@@ -201,6 +202,14 @@
                 }
 
                 async function getVisitsMap() {
+                    // Limpiar marcadores existentes
+                    visits.value = [];
+                    map.value.eachLayer((layer) => {
+                        if (layer instanceof L.Marker) {
+                            map.value.removeLayer(layer);
+                        }
+                    });
+
                     try {
                         const response = await fetch('{{route('visits.index')}}');
                         const data = await response.json();
@@ -265,6 +274,56 @@
                     manageVisitMode.value = 'edit';
                 }
 
+                async function updateVisit(id) {
+                    try {
+                        let url = "{{ route('visits.update', ['id' => '?']) }}".replace('?', id);
+                        const response = await fetch(url, {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            },
+                            body: JSON.stringify(visit.value)
+                        });
+
+                        const data = await response.json()
+
+                        if (!response.ok) {
+                            if (data.errors) {
+                                Object.values(data.errors).forEach(errorMsg => {
+                                    Toastify({
+                                        text: errorMsg,
+                                        duration: 2000,
+                                        gravity: "right",
+                                        position: "right",
+                                        style: {
+                                            background: "#ef4444",
+                                        },
+                                        stopOnFocus: true,
+                                    }).showToast();
+                                });   
+                            }
+                            return;
+                        }
+
+                        await getVisitsMap(); 
+                        Toastify({
+                            text: data.message,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            style: {
+                                background: "#10b981",
+                            },
+                        }).showToast()
+                        manageVisitMode.value = 'view';
+                    } catch (err) {
+                        console.error('Error al actualizar visita: ', err)
+                    }
+                }
+               
+
                 return {
                     map,
                     visits,
@@ -275,6 +334,7 @@
                     manageVisitMode,
                     showView,
                     showEdit,
+                    updateVisit,
                 }
             }
         }).mount('#app')

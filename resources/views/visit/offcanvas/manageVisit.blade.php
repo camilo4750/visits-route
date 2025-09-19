@@ -30,7 +30,7 @@
     <div class="edit-visit" v-show="manageVisitMode === 'edit'">
       <h2>Editar visita</h2>
       <hr class="mt-0">
-      <form action="">
+      <form @submit.prevent="updateVisit(visit.id)">
         <div class="mb-3">
           <label for="visitName" class="form-label">Nombre</label>
           <input type="text" class="form-control" id="visitName" v-model="visit.name">
