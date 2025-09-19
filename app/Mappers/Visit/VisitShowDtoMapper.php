@@ -15,6 +15,7 @@ class VisitShowDtoMapper extends BaseMapper
     public function createFromDbRecord($visit): VisitShowDto
     {
         $dto = new VisitShowDto();
+        $dto->id = $visit->id;
         $dto->name = $visit->name;
         $dto->email = $visit->email;
         $dto->latitude = $visit->latitude;

@@ -6,6 +6,7 @@ use App\Dto\BaseDto;
 
 class VisitShowDto extends BaseDto
 {
+    public int $id;
     public string $name;
 
     public string $email;
