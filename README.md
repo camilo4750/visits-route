@@ -7,55 +7,115 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Visit Route
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplicación web para la gestión de visitas, que integra un BackEnd en Laravel y un FrontEnd en Vue. Permite registrar, visualizar y administrar visitas directamente sobre un mapa interactivo.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Technologias
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Larave 12
+- Vue3.js (Composition Api)
+- leaflet
+- Toast.js
+- Bootstrap 5
 
-## Learning Laravel
+# BD
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Se usa una Base de Datos Postgres con la cual se realiza la consulta y persistencia de datos. ports - 5437:5432
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Arquitectura BackEnd
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- La aplicación está desarrollada bajo una arquitectura en capas, implementando los patrones Service y Repository. Esto permite desacoplar la lógica de negocio del acceso a datos mediante el uso de interfaces, logrando un sistema más mantenible y escalable.
+- Para facilitar la configuración del entorno, asegurar la portabilidad, se utilizó Docker como herramienta de virtualización ligera.
 
-## Laravel Sponsors
+```plaintext
+visit-route/
+│
+├── app/
+│   ├── Dto/                     # Objetos de transferencia de datos (Data Transfer Objects)
+│   ├── Entities/                # Entidades del dominio
+│   ├── Exceptions/              # Excepciones personalizadas
+│   ├── Http/
+│   │   └── Controllers/         # Controladores HTTP
+│   ├── Interfaces/
+│   │   ├── Repositories/        # Interfaces para los Repositorios
+│   │   └── Services/            # Interfaces para los Servicios
+│   ├── Mappers/                 # Mapeadores de datos (DTO)
+│   ├── Repository/              # Implementaciones de Repositorios
+│   └── Services/                # Implementaciones de Servicios
+│
+├── routes/
+│    ├── App/                    # Rutas de la aplicacion
+├── test/
+│    ├── Feature/                # Pruebas enfocadas en las rutas y casos de uso de la aplicación
+│    ├── Integration/            # Pruebas que validan la interacción entre múltiples capas del sistema
+│    │   ├── Repositories/       # Pruebas de las interfaces de Repositorios (acceso a datos)
+│    │   └── Services/           # Pruebas de las interfaces de Servicios (lógica de negocio)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```
+# FrontEnd
+- La carpeta resources/views contiene todas las vistas Blade de la aplicación. Dentro de ella se organiza la estructura en layouts, donde se define la plantilla base (master.blade), y en subcarpetas como visit, que agrupan las vistas específicas del módulo de visitas.
+- puerto para acceder a la web, despues de realizar los pasos para levantar el contendor docker http://localhost:8083/
 
-### Premium Partners
+```plaintext
+visit-route/
+│
+├── resources/
+│   ├── views/ 
+│   |   ├── layouts/
+│   |       └── master.blade        # Plantilla base que define la estructura general (layout principal)
+│   |   ├── visit/
+│   │       └── Ofcanvas/            # Vistas parciales para offcanvas (paneles laterales)
+│   │       └── index.blade            # Vista principal de gestión de visitas
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Migraciones
+- Se agrega migracion para crear por defecto y las de la tabla visits
 
-## Contributing
+# Especificacion levantar entorno
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Pasos para correr el entorno Docker de Visit Route API
+- Los comandos se ejecutan en orden al levantar el contenedor con 'up' este quedara corriendo, abrir una nueva pestaña linux "Ctrl + Shift + t" y correr el comando para instalar el composer y correr las migraciones
+- Despues podra acceder a la url de la vista 
 
-## Code of Conduct
+Crear la red de Docker
+```plaintext
+sudo docker network create visit-route-network
+ ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+ Levantar los contenedores del entorno (modo desarrollo)
+```plaintext
+sudo docker compose -f .devops/docker/develop/docker-compose.yml -f .devops/docker/develop/docker-compose.override.yml up
+```
+Instalar dependencias de PHP con Composer
+```plaintext
+sudo docker exec -it visit-route composer install
+ ```
 
-## Security Vulnerabilities
+Ejecutar migraciones de base de datos
+```plaintext
+sudo docker exec -it visit-route php artisan migrate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Se desarrolló el backend siguiendo un enfoque guiado por pruebas (TDD). Los tests permiten validar el correcto funcionamiento de toda la aplicación. Para su ejecución se utilizó el trait RefreshDatabase, evitando la necesidad de contar con una base de datos dedicada para las pruebas.
+```plaintext
+sudo docker exec -it visit-route php artisan test
+```
 
-## License
+Comando para realizar el insert de las visitas se deja 3 para pruebas, sin embargo esto tambien se puede hacer en la vista del mapa, y gestionar cada visita, para ver, editar, eliminar
+```plaintext
+sudo docker exec -it visit-route php artisan visita:create -- "Nombre Prueba 1" "prueba1@ejemplo.com" 4.5981 -74.0760
+sudo docker exec -it visit-route php artisan visita:create -- "Nombre Prueba 2" "prueba2@ejemplo.com" 4.6584 -74.0930
+sudo docker exec -it visit-route php artisan visita:create -- "Nombre Prueba 3" "prueba3@ejemplo.com" 4.7016 -74.1469
+```
+Acceder a la aplicación en el navegador
+- 📍 URL: http://localhost:8083/
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Detener contenedor visit-route
+```plaintext
+sudo docker compose -f .devops/docker/develop/docker-compose.yml -f .devops/docker/develop/docker-compose.override.yml down
+```
+# Documentación
+- Se enviara el .env dentro del .zip
+- Se entrega archivo Swagger Documentando las rutas implementadas.
+- Imagenes de evidencia del desarrollo, test, documentacion rutas.
