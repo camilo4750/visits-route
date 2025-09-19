@@ -129,6 +129,12 @@
             setup() {
                 const map = ref(null);
                 const visits = ref([]);
+                const newVisit = ref({
+                    name: '',
+                    email: '',
+                    latitude: null,
+                    longitude: null,
+                });
                 const visit = ref({
                     id: null,
                     name: '',
@@ -160,7 +166,7 @@
                                 "Accept": "application/json",
                                 "X-CSRF-TOKEN": "{{ csrf_token() }}",
                             },
-                            body: JSON.stringify(visit.value)
+                            body: JSON.stringify(newVisit.value)
                         });
 
                         const data = await response.json()
@@ -322,11 +328,69 @@
                         console.error('Error al actualizar visita: ', err)
                     }
                 }
+
+                function confirmDelete() {
+                    if (confirm("¿Estás seguro de que deseas eliminar esta visita?")) {
+                        deleteVisit(visit.value.id);
+                    }
+                }
                
+                async function deleteVisit(id) {
+                    try {
+                        let url = "{{ route('visits.destroy', ['id' => '?']) }}".replace('?', id);
+                        const response = await fetch(url, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Accept": "application/json",
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            },
+                        });
+
+                        const data = await response.json()
+
+                        if (!response.ok) {
+                            if (data.message) {
+                                Toastify({
+                                    text: data.message,
+                                    duration: 2000,
+                                    gravity: "right",
+                                    position: "right",
+                                    style: {
+                                        background: "#ef4444",
+                                    },
+                                }).showToast();
+                            }
+                            return;
+                        }
+
+                        await getVisitsMap(); 
+                        Toastify({
+                            text: data.message,
+                            duration: 3000,
+                            gravity: "top",
+                            position: "right",
+                            style: {
+                                background: "#10b981",
+                            },
+                        }).showToast()
+                        visit.value = {
+                            id: null,
+                            name: '',
+                            email: '',
+                            latitude: null,
+                            longitude: null,
+                        }
+                        $('#offcanvasManageVisit').offcanvas('hide');
+                    } catch (err) {
+                        console.error('Error al eliminar visita: ', err)
+                    }
+                }
 
                 return {
                     map,
                     visits,
+                    newVisit,
                     visit,
                     isLoading,
                     saveVisit,
@@ -335,6 +399,8 @@
                     showView,
                     showEdit,
                     updateVisit,
+                    confirmDelete,
+                    deleteVisit,
                 }
             }
         }).mount('#app')

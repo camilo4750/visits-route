@@ -12,7 +12,7 @@
       <button class="btn-action btn-edit" @click="showEdit">
         <i class="fas fa-edit"></i> Editar
       </button>
-      <button class="btn-action btn-delete">
+      <button class="btn-action btn-delete" @click="confirmDelete(visit.id)">
         <i class="fas fa-trash-alt"></i> Eliminar
       </button>
     </div>

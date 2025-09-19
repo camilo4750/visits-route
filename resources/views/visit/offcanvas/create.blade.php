@@ -7,19 +7,19 @@
     <form @submit.prevent="saveVisit">
       <div class="mb-3">
         <label for="name" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="name" placeholder="Nombre" v-model="visit.name">
+        <input type="text" class="form-control" id="name" placeholder="Nombre" v-model="newVisit.name">
       </div>
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input type="text" class="form-control" id="email" placeholder="Correo electronico" v-model="visit.email">
+        <input type="text" class="form-control" id="email" placeholder="Correo electronico" v-model="newVisit.email">
       </div>
       <div class="mb-3">
         <label for="latitude" class="form-label">Latitud</label>
-        <input type="number" step="any" class="form-control" id="latitude" placeholder="Latitud de la visita" v-model="visit.latitude">
+        <input type="number" step="any" class="form-control" id="latitude" placeholder="Latitud de la visita" v-model="newVisit.latitude">
       </div>
       <div class="mb-3">
         <label for="longitude" class="form-label">Longitud</label>
-        <input type="number" step="any" class="form-control" id="longitude" placeholder="Longitud de la visita" v-model="visit.longitude">
+        <input type="number" step="any" class="form-control" id="longitude" placeholder="Longitud de la visita" v-model="newVisit.longitude">
       </div>
       <div class="d-grid gap-2">
         <button type="submit" class="btn btn-success d-block" :disabled="isLoading">Guardar Visita</button>
