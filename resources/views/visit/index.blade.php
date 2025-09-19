@@ -200,6 +200,13 @@
                             stopOnFocus: true,
                         }).showToast()
                         $('#offcanvasCreateVisit').offcanvas('hide');
+                        newVisit.value = {
+                            name: '',
+                            email: '',
+                            latitude: null,
+                            longitude: null,
+                        }
+                        await getVisitsMap();
                     } catch (err) {
                        console.error('Error al guardar visita: ', err)
                     } finally {

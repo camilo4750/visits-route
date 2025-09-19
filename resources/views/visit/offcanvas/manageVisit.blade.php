@@ -24,7 +24,7 @@
       <p><strong>Latitud:</strong> @{{ visit.latitude }}</p>
       <p><strong>Longitud:</strong> @{{ visit.longitude }}</p>
       <p><strong>Fecha de creación:</strong> @{{ visit.createdAt }}</p>
-      <p><strong>Fecha de actualización:</strong> @{{ visit.updated_at }}</p>
+      <p><strong>Fecha de actualización:</strong> @{{ visit.updatedAt }}</p>
     </div>
 
     <div class="edit-visit" v-show="manageVisitMode === 'edit'">

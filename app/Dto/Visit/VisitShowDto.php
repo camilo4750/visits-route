@@ -15,4 +15,6 @@ class VisitShowDto extends BaseDto
     public float $longitude;
 
     public string $createdAt;
+
+    public ?string $updatedAt;
 }

@@ -21,6 +21,7 @@ class VisitShowDtoMapper extends BaseMapper
         $dto->latitude = $visit->latitude;
         $dto->longitude = $visit->longitude;
         $dto->createdAt = $visit->created_at;
+        $dto->updatedAt = $visit->updated_at;
         return $dto;
     }
 }
